@@ -5,7 +5,7 @@ import {schemaTypes} from './schemaTypes'
 
 export default defineConfig({
   name: 'default',
-  title: 'la-goleta-studio',
+  title: 'Panel Pixelens',
 
   projectId: 'kwdpsp63',
   dataset: 'production',
