@@ -19,6 +19,13 @@ export default defineType({
   name: 'ajustes',
   title: 'Configuración de la Web',
   type: 'document',
+  fieldsets: [
+    { name: 'legal', title: '⚖️ Datos Legales', options: { collapsible: true, collapsed: true } },
+    { name: 'contacto', title: '📞 Contacto y Ubicación', options: { collapsible: true } },
+    { name: 'hero', title: '🏠 Portada (Home)', options: { collapsible: true, collapsed: true } },
+    { name: 'reservas', title: '📅 Motor de Reservas', options: { collapsible: true } },
+    { name: 'social', title: '🌍 Redes Sociales', options: { collapsible: true, collapsed: true } }
+  ],
   fields: [
 
     // --- 1. DATOS LEGALES (Obligatorios para Europa) ---
@@ -26,31 +33,56 @@ export default defineType({
       name: 'razonSocial',
       title: 'Razón Social (Nombre Legal)',
       type: 'string',
-      description: 'El nombre oficial para las facturas. Ej: Mario Rossi S.L.'
+      description: 'El nombre oficial para las facturas. Ej: Mario Rossi S.L.',
+      fieldset: 'legal'
     }),
     defineField({
       name: 'dominioWeb',
       title: 'Dominio de la Web',
       type: 'string',
-      description: 'La dirección web sin https. Ej: pizzeriamario.com'
+      description: 'La dirección web sin https. Ej: pizzeriamario.com',
+      fieldset: 'legal'
     }),
     defineField({
       name: 'cif',
       title: 'CIF / NIF',
       type: 'string',
-      description: 'Identificación fiscal. Ej: B-12345678'
+      description: 'Identificación fiscal. Ej: B-12345678',
+      fieldset: 'legal'
     }),
 
     // --- 2. DATOS DE CONTACTO PÚBLICOS ---
-    defineField({ name: 'nombreRestaurante', title: 'Nombre Comercial', type: 'string' }),
-    defineField({ name: 'telefono', title: 'Teléfono de Reservas', type: 'string' }),
-    defineField({ name: 'email', title: 'Email de Contacto', type: 'string' }),
-    defineField({ name: 'direccion', title: 'Dirección Física', type: 'text', rows: 2 }),
+    defineField({
+      name: 'nombreRestaurante',
+      title: 'Nombre Comercial',
+      type: 'string',
+      fieldset: 'contacto'
+    }),
+    defineField({
+      name: 'telefono',
+      title: 'Teléfono de Reservas',
+      type: 'string',
+      fieldset: 'contacto'
+    }),
+    defineField({
+      name: 'email',
+      title: 'Email de Contacto',
+      type: 'string',
+      fieldset: 'contacto'
+    }),
+    defineField({
+      name: 'direccion',
+      title: 'Dirección Física',
+      type: 'text',
+      rows: 2,
+      fieldset: 'contacto'
+    }),
     defineField({
       name: 'logo',
       title: 'Logo de la Web',
       type: 'image',
-      options: { hotspot: true }
+      options: { hotspot: true },
+      fieldset: 'contacto'
     }),
 
     // --- 3. PORTADA HOME (HERO) ---
@@ -58,19 +90,22 @@ export default defineType({
       name: 'tituloHero',
       title: 'Título Principal (Home)',
       type: 'string',
-      description: 'Ej: Bienvenido a La Goleta'
+      description: 'Ej: Bienvenido a La Goleta',
+      fieldset: 'hero'
     }),
     defineField({
       name: 'descripcionHero',
       title: 'Subtítulo de Bienvenida',
       type: 'text',
-      rows: 3
+      rows: 3,
+      fieldset: 'hero'
     }),
     defineField({
       name: 'imagenHero',
       title: 'Imagen de Fondo (Home)',
       type: 'image',
-      options: { hotspot: true }
+      options: { hotspot: true },
+      fieldset: 'hero'
     }),
 
     // --- 4. MOTOR DE RESERVAS INTELIGENTE ---
@@ -79,6 +114,7 @@ export default defineType({
       title: '⚙️ Configuración del Formulario de Reservas',
       type: 'object',
       description: 'Define aquí qué opciones aparecen en los desplegables de la web.',
+      fieldset: 'reservas',
       fields: [
         defineField({
           name: 'opcionesComensales',
@@ -120,28 +156,51 @@ export default defineType({
       type: 'object',
       description: 'Personaliza los colores y tipografía del sitio web.',
       fields: [
+        // Theme Selector (shown first)
+        defineField({
+          name: 'theme',
+          title: 'Tema Predefinido',
+          type: 'string',
+          description: 'Elige una base de diseño. Puedes personalizar detalles abajo.',
+          initialValue: 'luxury',
+          options: {
+            list: [
+              { title: '🎩 Elegante (Dorado + Negro)', value: 'luxury' },
+              { title: '🌿 Fresco (Verde + Crema)', value: 'nature' },
+              { title: '🌊 Oceánico (Azul + Blanco)', value: 'ocean' },
+              { title: '🏙️ Urbano (Gris + Lima)', value: 'urban' },
+              { title: '🎨 Personalizado (Manual)', value: 'custom' }
+            ],
+            layout: 'dropdown'
+          }
+        }),
+        // Manual Color/Font Fields (always visible, can override theme)
         defineField({
           name: 'colorBrand',
           title: 'Color Principal (Marca)',
           type: 'string',
+          description: 'Dejar vacío para usar el color del Tema seleccionado. Si escribes algo, sobrescribirá al tema.',
           initialValue: '#c2410c'
         }),
         defineField({
           name: 'colorDark',
           title: 'Color Oscuro (Textos/Fondos)',
           type: 'string',
+          description: 'Dejar vacío para usar el color del Tema seleccionado. Si escribes algo, sobrescribirá al tema.',
           initialValue: '#0f172a'
         }),
         defineField({
           name: 'colorSurface',
           title: 'Color de Fondo Suave',
           type: 'string',
+          description: 'Dejar vacío para usar el color del Tema seleccionado. Si escribes algo, sobrescribirá al tema.',
           initialValue: '#fafaf9'
         }),
         defineField({
           name: 'fontPreset',
           title: 'Estilo de Tipografía',
           type: 'string',
+          description: 'Dejar vacío para usar la tipografía del Tema seleccionado. Si seleccionas algo, sobrescribirá al tema.',
           initialValue: 'serif',
           options: {
             list: [
